@@ -1,0 +1,7 @@
+aiohttp==3.9.5
+gpt_researcher==0.13.3
+langchain_openai==0.3.18
+pandas==2.2.3
+pydantic==2.11.5
+python-dotenv==1.1.0
+numpy==1.26.4
