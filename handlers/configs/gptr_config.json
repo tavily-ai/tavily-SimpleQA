@@ -1,0 +1,7 @@
+{
+    "deep_research_breadth": 4,
+    "deep_research_depth": 2,
+    "deep_research_concurrency": 3,
+    "temperature": 0.0,
+    "strategic_llm": "openai:gpt-4.1-mini"
+}
