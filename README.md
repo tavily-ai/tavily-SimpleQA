@@ -1,13 +1,13 @@
 # **Search Providers Evaluation System**
 
 ## **Overview**
-This project provides an evaluation system of [SimpleQA](https://openai.com/index/introducing-simpleqa/) benchmark for different search providers.
+This repoistory provides an evaluation system of [SimpleQA](https://openai.com/index/introducing-simpleqa/) benchmark for different search providers.
 
 ### **Features**
 - Evaluation of different search providers
 - Customizable configuration for each provider
 - Parallel independent evaluation
-- Continue evaluation from where it stopped if something went wrong
+- Resume the evaluation from the point of failure if an error occurs
 
 ---
 
@@ -88,9 +88,9 @@ The script generates two types of output files in the specified output directory
 - Detailed results CSV for each provider (questions, answers, and evaluation grades)
 - Summary CSV with accuracy metrics for all providers
 
-### **Continue Benchmark**
+### **Resume Evaluation**
 
-If your benchmark evaluation is interrupted, you can continue from where it stopped using the `--rerun` flag (`output_dir` folder must exists with the previous run partial results):
+If your evaluation is interrupted, you can continue from where it stopped using the `--rerun` flag (`output_dir` folder must exists with the previous run partial results):
 
 ```sh
 python run_evaluation.py --output_dir results/my_evaluation --rerun
