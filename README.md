@@ -72,7 +72,7 @@ Configuration file `config.json` might look like:
 ```json
 {
   "tavily": {
-    "depth": "advanced",
+    "search_depth": "advanced",
     "include_raw_content": true,
     "max_results": 10,
   },
