@@ -1,7 +1,7 @@
 # **Search Providers Evaluation System**
 
 ## **Overview**
-This repoistory provides an evaluation system of [SimpleQA](https://openai.com/index/introducing-simpleqa/) benchmark for different search providers.
+This repository provides an evaluation system for the [SimpleQA](https://openai.com/index/introducing-simpleqa/) benchmark, comparing different search providers.
 
 ### **Features**
 - Evaluation of different search providers
@@ -13,7 +13,7 @@ This repoistory provides an evaluation system of [SimpleQA](https://openai.com/i
 
 ## **Evaluation Results**
 
-The table below shows evaluation results across different search providers and LLMs on the SimpleQA benchmark. 
+The table below presents evaluation results across various search providers and LLMs on the SimpleQA benchmark. 
 **NOTE**: For transparency and accuracy, we present the higher score between our internal evaluation results and officially reported scores for supported providers. For other providers, we display their publicly reported results. 
 
 | Provider | Accuracy |
@@ -90,7 +90,7 @@ The script generates two types of output files in the specified output directory
 
 ### **Resume Evaluation**
 
-If your evaluation is interrupted, you can continue from where it stopped using the `--rerun` flag (`output_dir` folder must exists with the previous run partial results):
+If your evaluation is interrupted, you can continue from where it stopped using the `--rerun` flag (`output_dir` folder must exist with the previous run's partial results):
 
 ```sh
 python run_evaluation.py --output_dir results/my_evaluation --rerun
@@ -99,7 +99,7 @@ python run_evaluation.py --output_dir results/my_evaluation --rerun
 This will:
 1. Load existing results from the specified output directory
 2. Skip questions that have already been evaluated
-3. Continue with remaining questions in the dataset
+3. Continue with the remaining questions in the dataset
 4. Update the summary statistics with all results when complete
 
 ---
