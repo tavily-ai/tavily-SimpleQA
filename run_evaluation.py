@@ -46,7 +46,6 @@ async def evaluate_provider(
     """Evaluate a single search provider on the dataset."""
     evaluator = CorrectnessEvaluator()
     
-    # Track results
     results = []
     correct_count = 0
     
@@ -60,7 +59,6 @@ async def evaluate_provider(
         try:
             search_result = await search_handler.search(query)
             
-            # Store original answer before post-processing
             original_answer = search_result.get("answer", "")
             
             is_llm_response = search_handler.is_llm_response
@@ -116,11 +114,9 @@ async def evaluate_provider(
             })
             return None
     
-    # Process all examples with concurrency
     tasks = [process_example(example) for example in examples]
     await asyncio.gather(*tasks)
     
-    # Calculate accuracy
     accuracy = correct_count / len(examples) if examples else 0
     accuracy = round(accuracy, 3)
 
@@ -133,7 +129,7 @@ async def evaluate_provider(
     }
 
 
-async def run_benchmark(
+async def run_evaluation(
     csv_path: str,
     search_provider_params: Dict[str, Dict[str, Any]],
     start_index: int = 0,
@@ -158,7 +154,7 @@ async def run_benchmark(
         rerun: Whether to rerun evaluation on existing results directory, output_dir must exist
     """
     try:
-        # Load data from CSV
+        # Load and prepare data from CSV
         examples = load_csv_data(csv_path, start_index, end_index, random_sample)
         examples = prepare_examples(examples, list(search_provider_params.keys()), rerun, output_dir, random_sample)
     
@@ -168,7 +164,6 @@ async def run_benchmark(
 
         os.makedirs(output_dir, exist_ok=True)
         
-        # Track overall results
         provider_results = {}
         post_processor = PostProcessor(llm_model=post_process_model)
 
@@ -203,8 +198,7 @@ async def run_benchmark(
         
         save_summary(provider_results, output_dir)
 
-        # Print summary to console
-        print("\n===== BENCHMARK RESULTS =====")
+        print("\n===== EVALUATION RESULTS =====")
         print(f"Dataset: {csv_path}")
         print("-----------------------------")
         for provider_name, result in provider_results.items():
@@ -213,7 +207,7 @@ async def run_benchmark(
         
         return provider_results
     except Exception as e:
-        logger.error(f"Error running benchmark: {str(e)}")
+        logger.error(f"Error running evaluation: {str(e)}")
 
 
 if __name__ == "__main__":
@@ -230,10 +224,8 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    # Prepare search provider parameters
     search_provider_params = {}
     
-    # Load provider configuration either from file or JSON string
     if args.config:
         try:
             with open(args.config, 'r') as f:
@@ -254,8 +246,7 @@ if __name__ == "__main__":
     
     output_dir = get_output_dir(args.output_dir, args.rerun)
 
-    # Run the benchmark
-    asyncio.run(run_benchmark(
+    asyncio.run(run_evaluation(
         csv_path=args.csv_path,
         search_provider_params=search_provider_params,
         start_index=args.start_index,
