@@ -20,6 +20,13 @@ if not logger.handlers:
     logger.addHandler(console_handler)
 
 
+TAVILY_DEFAULT_CONFIG = {
+    "search_depth": "advanced",
+    "include_raw_content": True,
+    "max_results": 10,
+}
+
+
 async def get_search_handlers(search_provider_params: Dict[str, Dict[str, Any]]):
     """Initialize search handlers based on provided parameters."""
     search_handlers = []
@@ -226,23 +233,14 @@ if __name__ == "__main__":
     
     search_provider_params = {}
     
-    if args.config:
-        try:
-            with open(args.config, 'r') as f:
-                search_provider_params = json.load(f)
-            logger.info(f"Loaded provider configuration from file: {args.config}")
-        except Exception as e:
-            logger.error(f"Error loading provider configuration from file: {str(e)}")
-    else:
-        # Default to Tavily with default settings if no configuration provided
-        logger.info("No provider configuration specified, using default Tavily configuration")
-        search_provider_params = {
-            "tavily": {
-                "depth": "advanced",
-                "include_raw_content": True,
-                "max_results": 10,
-            }
-        }
+    try:
+        with open(args.config, 'r') as f:
+            search_provider_params = json.load(f)
+        logger.info(f"Loaded provider configuration from file: {args.config}")
+    except Exception as e:
+        logger.info(f"Error loading provider configuration from file: {str(e)}")
+        logger.info("Using default Tavily config")
+        search_provider_params = {"tavily": TAVILY_DEFAULT_CONFIG}
     
     output_dir = get_output_dir(args.output_dir, args.rerun)
 
