@@ -20,6 +20,7 @@ The table below presents evaluation results across various search providers and 
 |----------|-------|
 | Tavily   | 93.3%   |
 | Perplexity Sonar-Pro | 88.8% |
+| Serper Search | 82.2% |
 | Exa Search ([link](https://exa.ai/blog/api-evals)) | 90.04%   |
 | OpenAI Web Search ([link](https://openai.com/index/new-tools-for-building-agents/)) | 90%  |
 | GPT 4.5 ([link](https://openai.com/index/introducing-gpt-4-5/#:~:text=remain%E2%80%94a%20mystery.-,Deeper,-world%20knowledge)) | 62.5%  |
@@ -47,6 +48,7 @@ The table below presents evaluation results across various search providers and 
     OPENAI_API_KEY=XXX
     EXA_API_KEY=XXX
     PERPLEXITY_API_KEY=XXX
+    SERPER_API_KEY=XXX
     ```
 
 4. **Run**:
@@ -111,6 +113,7 @@ The current supported search providers are:
 - `perplexity`
 - `gptr`
 - `exa`
+- `serper`
 
 You can extend the system to evaluate additional search providers by following these steps:
 
