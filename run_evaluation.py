@@ -5,7 +5,7 @@ import asyncio
 import argparse
 from dotenv import load_dotenv
 from typing import Dict, Any, List, Optional
-from handlers import TavilyHandler, ExaHandler, GPTRHandler, PerplexityHandler
+from handlers import TavilyHandler, ExaHandler, GPTRHandler, PerplexityHandler, SerperHandler
 from evaluators import CorrectnessEvaluator
 from utils import PostProcessor, save_summary, load_csv_data, prepare_examples, get_output_dir, save_result
 
@@ -40,6 +40,8 @@ async def get_search_handlers(search_provider_params: Dict[str, Dict[str, Any]])
             search_handlers.append(GPTRHandler(params))
         elif provider_name.lower() == "perplexity":
             search_handlers.append(PerplexityHandler(params))
+        elif provider_name.lower() == "serper":
+            search_handlers.append(SerperHandler(params))
 
     return search_handlers
 
