@@ -37,7 +37,7 @@ class GPTRHandler(ProviderHandler):
             query: The query to search for
 
         Returns:
-            Dictionary containing 'answer' and 'raw_response'
+            Dictionary containing 'answer' and 'search_response'
         """
         try:
             researcher = GPTResearcher(

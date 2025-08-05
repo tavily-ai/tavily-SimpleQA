@@ -3,9 +3,10 @@ import os
 import json
 import asyncio
 import argparse
+import time
 from dotenv import load_dotenv
 from typing import Dict, Any, List, Optional
-from handlers import TavilyHandler, ExaHandler, GPTRHandler, PerplexityHandler, SerperHandler
+from handlers import TavilyHandler, ExaHandler, GPTRHandler, PerplexityHandler, SerperHandler, BraveHandler
 from evaluators import CorrectnessEvaluator
 from utils import PostProcessor, save_summary, load_csv_data, prepare_examples, get_output_dir, save_result
 
@@ -29,21 +30,20 @@ TAVILY_DEFAULT_CONFIG = {
 
 async def get_search_handlers(search_provider_params: Dict[str, Dict[str, Any]]):
     """Initialize search handlers based on provided parameters."""
-    search_handlers = []
+    handler_map = {
+        "tavily": TavilyHandler,
+        "exa": ExaHandler,
+        "gptr": GPTRHandler,
+        "perplexity": PerplexityHandler,
+        "serper": SerperHandler,
+        "brave": BraveHandler,
+    }
     
-    for provider_name, params in search_provider_params.items():
-        if provider_name.lower() == "tavily":
-            search_handlers.append(TavilyHandler(params))
-        elif provider_name.lower() == "exa":
-            search_handlers.append(ExaHandler(params))
-        elif provider_name.lower() == "gptr":
-            search_handlers.append(GPTRHandler(params))
-        elif provider_name.lower() == "perplexity":
-            search_handlers.append(PerplexityHandler(params))
-        elif provider_name.lower() == "serper":
-            search_handlers.append(SerperHandler(params))
-
-    return search_handlers
+    return [
+        handler_class(params)
+        for provider_name, params in search_provider_params.items()
+        if (handler_class := handler_map.get(provider_name.lower()))
+    ]
 
 
 async def evaluate_provider(
@@ -51,6 +51,7 @@ async def evaluate_provider(
     search_handler,
     examples: List[Dict],
     post_processor: Optional[PostProcessor] = None,
+    batch_size: int = 15,
 ):
     """Evaluate a single search provider on the dataset."""
     evaluator = CorrectnessEvaluator()
@@ -123,8 +124,12 @@ async def evaluate_provider(
             })
             return None
     
-    tasks = [process_example(example) for example in examples]
-    await asyncio.gather(*tasks)
+    # Process examples in batches
+    for i in range(0, len(examples), batch_size):
+        batch = examples[i:i + batch_size]
+        tasks = [process_example(example) for example in batch]
+        await asyncio.gather(*tasks)
+        time.sleep(3.0) # avoid rate limiting
     
     accuracy = correct_count / len(examples) if examples else 0
     accuracy = round(accuracy, 3)
@@ -170,6 +175,9 @@ async def run_evaluation(
         # Initialize search handlers
         search_handlers = await get_search_handlers(search_provider_params)
         provider_names = list(search_provider_params.keys())
+
+        if len(search_handlers) == 0:
+            raise Exception("No search handlers found")
 
         os.makedirs(output_dir, exist_ok=True)
         
