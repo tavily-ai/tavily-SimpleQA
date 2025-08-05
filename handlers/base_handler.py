@@ -41,7 +41,7 @@ class ProviderHandler(ABC):
             query: The query to search for
 
         Returns:
-            Dictionary containing 'answer' and 'raw_response'
+            Dictionary containing 'answer' and 'search_response'
         """
         pass
 

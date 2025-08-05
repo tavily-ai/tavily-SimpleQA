@@ -38,7 +38,7 @@ class ExaHandler(ProviderHandler):
             query: The query to search for
 
         Returns:
-            Dictionary containing 'answer' and 'raw_response'
+            Dictionary containing 'answer' and 'search_response'
         """
         headers = {
             'content-type': 'application/json',
@@ -53,18 +53,18 @@ class ExaHandler(ProviderHandler):
 
         try:
             async with aiohttp.ClientSession() as session:
-                # this is for not getting HTTP 429 "too many requests" from Exa server
-                time.sleep(2.0)
                 async with session.post(
                         f"{self.api_url}/search",
                         json=data,
                         headers=headers
                 ) as response:
                     if response.status != 200:
-                        print(f"Error in Exa search: HTTP {response.status}")
+                        logger.error(f"Error in Exa search: HTTP {response.status}")
+                        error_text = await response.text()
+                        logger.error(f"Response: {error_text}")
                         return {
                             "answer": "",
-                            "raw_response": None
+                            "search_response": None
                         }
 
                     response_data = await response.json()
@@ -74,10 +74,10 @@ class ExaHandler(ProviderHandler):
                     }
 
         except Exception as e:
-            print(f"Error in Exa search: {str(e)}")
+            logger.error(f"Error in Exa search: {str(e)}")
             return {
                 "answer": "",
-                "raw_response": None
+                "search_response": None
             }
 
     async def post_process(self, search_response: dict) -> str:
